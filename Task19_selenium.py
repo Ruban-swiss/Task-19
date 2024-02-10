@@ -5,67 +5,50 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from time import sleep
 
-class LoginAutomation:
-    def __init__(self, url, username, password):
-        self.url = url
-        self.username = username
-        self.password = password
-        self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
 
+class Task19:
+
+    def __init__(self, url):
+        self.url = url
+        self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
     def boot(self):
         self.driver.get(self.url)
         self.driver.maximize_window()
-        self.sleep(5)
-
-    def sleep(self, seconds):
-        sleep(seconds)
-
-    def inputBox(self, value, key):
-        self.driver.find_element(by=By.NAME, value=value).send_keys(key)
-
-    def submitBtn(self):
-        self.driver.find_element(by=By.TAG_NAME, value="button").click()
+        sleep(10)
 
     def quit(self):
         self.driver.quit()
 
-
-    def fetch_title(self):
-            self.driver.get(self.url)
-            return self.driver.title
-
-
-    def fetchURL(self):
-        try:
-            print(self.findElement().get_attribute("href"))
-        except:
-            print("unable to fetch the url")
-
-    def fetch_entire_contents(self, filename):
-        with open(filename, 'w', encoding='utf-8') as file:
-            file.write(self.driver.page_source)
-
-    def fetch_webpage_info(self):
-        title = self.fetch_title()
-        self.fetch_entire_contents("webpage_task_11.txt")
-        self.driver.quit()
-
     def login(self):
-        self.boot()
-        self.inputBox("username", self.username)
-        self.inputBox("password",self.password)
-        self.submitBtn()
+        username_input= self.driver.find_element(by=By.ID, value="user-name")
+        password_input = self.driver.find_element(by=By.ID, value="password")
+
+        username_input.send_keys("standard_user")
+        password_input.send_keys("secret_sauce")
+
+        self.driver.find_element(by=By.ID, value="login-button").click()
+
+        sleep(10)
+
+    def getTitle(self):
+        return self.driver.title
+
+    def getURL(self):
+        return self.driver.current_url
+
+    def sourceCode(self, filename="webpage_task_11.txt"):
+        with open(filename, "w", encoding="utf-8") as file:
+            file.write(self.driver.page_source)
+        return self.driver.page_source
+
 
 url = "https://www.saucedemo.com/"
-
-obj = LoginAutomation(url, username="standard_user", password="secret_sauce")
-obj.login()
+obj = Task19(url)
 obj.boot()
-obj.fetch_title()
-obj.fetchURL()
-obj.fetch_entire_contents()
-obj.fetch_webpage_info()
+obj.login()
+print(obj.getURL())
+print(obj.getTitle())
+print(obj.sourceCode())
 obj.quit()
 
-print("Title:", title)
-print("Webpage content saved to 'webpage_task_11.txt'")
+
